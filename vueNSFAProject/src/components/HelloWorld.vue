@@ -14,9 +14,9 @@ defineProps<{
       <!-- create a variable called result, 
       loop through the API results and add a <li> for each result.
       Use the result variable to access properties like 'title' and 'name' -->
-      <li v-for="result in theData.results" :key="result.title">
-        {{ result.title }}
-        {{ result.name }}
+      <li v-for="result in theData" :key="result['title']">
+        {{ result['title'] }}
+        {{ result['name'] }}
       </li>
 </ul>
 
