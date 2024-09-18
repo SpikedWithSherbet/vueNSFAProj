@@ -1,7 +1,30 @@
-<script setup lang="ts">
-defineProps<{
-  msg: string
-}>()
+<script lang="ts">
+export default {
+  name: 'HelloWorld',
+  props: {
+    msg: String
+  },
+  data() {
+    return {
+      theData: {}
+    }
+  },
+  methods: {
+    fetchData() {
+      // use a piece of dynamic data to modify the API call
+      let query = 'https://api.collection.nfsa.gov.au/search?query=dog'
+      console.log(query)
+      fetch(query)
+        .then((response) => {
+          // response.json().then(res => console.log(res));
+          response.json().then((res) => (this.$data.theData = res))
+        })
+        .catch((err) => {
+          console.error(err)
+        })
+    }
+  }
+}
 </script>
 
 <template>
@@ -11,45 +34,15 @@ defineProps<{
   </div>
 
   <ul class="list-v">
-      <!-- create a variable called result, 
+    <!-- create a variable called result, 
       loop through the API results and add a <li> for each result.
       Use the result variable to access properties like 'title' and 'name' -->
-      <li v-for="result in theData" :key="result['title']">
-        {{ result['title'] }}
-        {{ result['name'] }}
-      </li>
-</ul>
-
+    <li v-for="result in theData" :key="result['title']">
+      {{ result['title'] }}
+      {{ result['name'] }}
+    </li>
+  </ul>
 </template>
-
-<script lang="ts">
-export default {
-    name: 'HelloWorld',
-    props: {
-        msg: String
-    },
-  data() {
-    return {
-      theData: {}
-    }
-  },
-    methods: {
-        fetchData() {
-      // use a piece of dynamic data to modify the API call
-      let query = 'https://api.collection.nfsa.gov.au/search?query=dog';
-      console.log(query);
-        fetch(query)
-            .then(response => {
-                // response.json().then(res => console.log(res));
-                response.json().then(res => this.$data.theData = res);
-            })
-            .catch(err => {
-                console.error(err);
-            });
-        }
-    }
-};
-</script>
 
 <style scoped>
 h1 {
