@@ -12,7 +12,6 @@ export default {
       resultSet: [],
       tempResultSet: [],
       currentPage: 1,
-      total: 0,
       imgURL: 'https://media.nfsacollection.net/',
       query: 'https://api.collection.nfsa.gov.au/title/',
       // query: 'https://api.collection.nfsa.gov.au/search?limit=25&hasMedia=yes&year=1993',
@@ -103,13 +102,13 @@ export default {
     <h1 class="green">{{ msg }}</h1>
 
 
-    <button @click="fetchData">fetch data</button>
-
-    <p>Total: {{ total }}</p>
+    <button @click="fetchData">next item</button>
 
         
         <h1>{{ theData['title'] }}</h1>
-        <p>{{ theData['productionDates']?.[0]?.['fromYear'] || 'N/A' }}</p>
+        <p class='est'>{{ "EST." + theData['productionDates']?.[0]?.['fromYear'] || 'N/A' }}</p>
+        <p>{{ theData['summary'] }}</p>
+
         <!-- <p>{{ result['name'] }}</p> -->
         <!-- check if there's any items in the preview array.  If so, put the biggest image in the view -->
         <!-- v-bind is used to update the src attribute when the data comes in -->
@@ -127,6 +126,11 @@ h1 {
   font-size: 2.6rem;
   position: relative;
   top: -10px;
+}
+
+.est {
+
+  padding-bottom: 3rem;
 }
 
 h3 {
