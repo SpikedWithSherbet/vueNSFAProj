@@ -15,9 +15,10 @@ export default {
       imgURL: 'https://media.nfsacollection.net/',
       query: 'https://api.collection.nfsa.gov.au/title/',
       // query: 'https://api.collection.nfsa.gov.au/search?limit=25&hasMedia=yes&year=1993',
-      itemIds: data.itemIds,
+      itemIds: data.items,
       idNumber: 0,
-      searchString: data.itemIds[0] || ''
+      searchString: data.items[0].itemId || '',
+      backgroundSlideImg: data.items[0].URL
     }
   },
   methods: {
@@ -25,8 +26,9 @@ export default {
       // use dynamic data to modify the API call
       // in this case we use a text box which sets searchString
       // and the currentPage to allow us to loop through the paginated results
-      if (this.idNumber < data.itemIds.length) { 
-        this.searchString = data.itemIds[this.idNumber]
+      if (this.idNumber < data.items.length) { 
+        this.searchString = data.items[this.idNumber].itemId
+        this.backgroundSlideImg = data.items[this.idNumber].URL;
         this.idNumber++;
         let queryString = this.query + this.searchString
       console.log('API call: ' + queryString + this.searchString)
@@ -43,9 +45,9 @@ export default {
  console.error(err);
  });
  }
- else if (this.idNumber >= data.itemIds.length) { 
+ else if (this.idNumber >= data.items.length) { 
   this.idNumber = 0;
-  this.searchString = data.itemIds[this.idNumber]
+  this.searchString = data.items[this.idNumber].itemId
   this.fetchData()
 
   
@@ -115,9 +117,9 @@ export default {
   <div class="search">
     <h1 class="green">{{ msg }}</h1>
 
-    <div class="bgImage">
+    <div class="bgImage" :style="{ backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(' + backgroundSlideImg + ')' }">
     <div class="itemWrapper">
-    <button class="itemFetch" @click="fetchData"><img src="./icons/down-arrow.png" alt="buttonpng"/></button>
+    
 
       
         <h1>{{ theData['title'] }}</h1>
@@ -133,6 +135,7 @@ export default {
           v-bind:src="imgURL + result['preview'][0]['filePath']"
           v-bind:alt="result['name']"
           v-bind:title="result['name']"  -->
+          <button class="itemFetch" @click="fetchData"><img src="./icons/down-arrow.png" alt="buttonpng"/></button>
         </div>
   </div> 
 </div>
@@ -172,7 +175,6 @@ export default {
 .itemWrapper {
 
   margin: 2rem;
-  position: absolute;
 
 }
 
@@ -184,6 +186,8 @@ export default {
   appearance: none;
   background-color: transparent;
   z-index: 1;
+  display: inline-block;
+  text-align: center;
 }
 p{ 
 
@@ -209,7 +213,6 @@ h3 {
 }
 
 .bgImage {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://i.vimeocdn.com/video/1235097709-2e194b311c33bb585ddcb5a83aee3abe6e8eedcd00732b8e13490dac39851299-d?mw=800&mh=600&q=70);
   height: 100vh;
   width: 100%;
   background-size: cover;
