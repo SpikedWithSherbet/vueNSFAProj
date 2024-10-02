@@ -98,13 +98,28 @@ export default {
 </script>
 
 <template>
+
+<div class="decadeSelectWrapper">
+
+<button class="70sWrapper"><h1>70s</h1></button>
+<button class="80sWrapper"><h1>80s</h1></button>
+<button class="90sWrapper"><h1>90s</h1></button>
+<button class="00sWrapper"><h1>00s</h1></button>
+
+
+
+</div>
+
+<div class="itemsection">
+  
   <div class="search">
     <h1 class="green">{{ msg }}</h1>
 
+    <div class="bgImage">
+    <div class="itemWrapper">
+    <button class="itemFetch" @click="fetchData"><img src="./icons/down-arrow.png" alt="buttonpng"/></button>
 
-    <button @click="fetchData">next item</button>
-
-        
+      
         <h1>{{ theData['title'] }}</h1>
         <p class='est'>{{ "EST." + theData['productionDates']?.[0]?.['fromYear'] || 'N/A' }}</p>
         <p>{{ theData['summary'] }}</p>
@@ -118,10 +133,65 @@ export default {
           v-bind:src="imgURL + result['preview'][0]['filePath']"
           v-bind:alt="result['name']"
           v-bind:title="result['name']"  -->
+        </div>
   </div> 
+</div>
+</div>
 </template>
 <style scoped>
+
+.itemSection {
+
+  display: block;
+  padding-bottom: 10em;
+}
+
+.decadeSelectWrapper{
+
+  display: flex;
+}
+.decadeSelectWrapper button{
+
+  height: 100dvh;
+  background-color: white;
+  border: 2px solid black;
+  color: black;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  width: 25vw;
+
+}
+
+.decadeSelectWrapper h1 {
+
+  color: black;
+}
+.itemWrapper {
+
+  margin: 2rem;
+  position: absolute;
+
+}
+
+
+.itemFetch {
+
+  border: none;
+  cursor: pointer;
+  appearance: none;
+  background-color: transparent;
+  z-index: 1;
+}
+p{ 
+
+  width: 37.5em;
+  color: white;
+}
 h1 {
+  color: white;
   font-weight: 500;
   font-size: 2.6rem;
   position: relative;
@@ -130,11 +200,23 @@ h1 {
 
 .est {
 
+  color: white;
   padding-bottom: 3rem;
 }
 
 h3 {
   font-size: 1.2rem;
+}
+
+.bgImage {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://i.vimeocdn.com/video/1235097709-2e194b311c33bb585ddcb5a83aee3abe6e8eedcd00732b8e13490dac39851299-d?mw=800&mh=600&q=70);
+  height: 100vh;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  top: 0;
+  z-index: 0;
 }
 
 .greetings h1,

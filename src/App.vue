@@ -8,11 +8,6 @@ import HelloWorld from './components/HelloWorld.vue'
 
     <div class="wrapper">
       <HelloWorld msg="" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
     </div>
   </header>
 
@@ -23,11 +18,6 @@ import HelloWorld from './components/HelloWorld.vue'
 header {
   line-height: 1.5;
   max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
 }
 
 nav {
@@ -57,7 +47,7 @@ nav a:first-of-type {
 
 @media (min-width: 1024px) {
   header {
-    display: flex;
+    display: block;
     place-items: center;
     padding-right: calc(var(--section-gap) / 2);
   }
@@ -67,9 +57,8 @@ nav a:first-of-type {
   }
 
   header .wrapper {
-    display: flex;
+    display: block;
     place-items: flex-start;
-    flex-wrap: wrap;
   }
 
   nav {
