@@ -230,6 +230,15 @@ fetchList() {
 
 <div class="app-background">
 
+<section class="hero">
+
+<a><h1>Explore a <i>detailed</i> history</h1></a>
+
+<span><h3>DECADES <br>
+  &darr;</h3></span>
+
+</section>
+
 <div class="decadeSelectWrapper">
 
 <button class="70sWrapper" @click="changeto70s"><h1>70s</h1></button>
@@ -241,15 +250,16 @@ fetchList() {
 
 </div>
 
+
 <div class="itemsection">
   
   <div class="search">
     <h1 class="green">{{ msg }}</h1>
 
     <div class="bgImage" :style="{ backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(' + backgroundSlideImg + ')' }">
-    <div class="itemWrapper">
+      <div class="itemWrapper">
     
-
+        
       
         <h1>{{ theData['title'] }}</h1>
         <p class='est'>{{ "EST." + theData['productionDates']?.[0]?.['fromYear'] || 'N/A' }}</p>
@@ -258,8 +268,8 @@ fetchList() {
 
           <button class="itemFetch" @click="fetchData"><img src="./icons/down-arrow.png" alt="buttonpng"/></button>
         </div>
-  </div> 
 </div>
+</div> 
 </div>
 <div class="detailedSortWrapper">
 
@@ -301,6 +311,24 @@ fetchList() {
   background-color: #333;
 }
 
+.hero {
+
+  height: 70dvh;
+  background-image: linear-gradient(to top, #000000, #000000, #333333, #333333);
+  background-size: cover;
+  background-size: 100% 1px;
+
+}
+
+.hero h1 {
+
+  color: white;
+  font-family: 'PT sans';
+  font-size: 8rem;
+  width: 65%;
+  margin-left: 2rem;
+}
+
 .itemSection {
 
   display: block;
@@ -332,6 +360,7 @@ fetchList() {
 .decadeSelectWrapper button:hover{
 
   background-color: #ffeb37;
+  cursor: pointer;
 }
 
 .decadeSelectWrapper h1 {
@@ -339,6 +368,14 @@ fetchList() {
   color: black;
   font-family: 'PT Sans', sans-serif;
   font-weight: 700;
+}
+
+.crteffect {
+ 
+  background-size: cover;
+  background-size: 100% 1px;
+  z-index: 3;
+  position:relative;
 }
 .itemWrapper {
 
@@ -483,9 +520,33 @@ color: white;
 
 }
 
+span h3 {
+
+text-align: center;
+
+padding: 2rem;
+color: white;
+font-size: 1.5rem;
+font-weight: bold;
+}
+
 .greetings h1,
 .greetings h3 {
   text-align: center;
+}
+
+@media screen{
+  .hero {
+    animation: scanlines infinite 55s linear ;
+  }
+} 
+@keyframes scanlines {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 0 -10px;
+  }
 }
 
 @media (min-width: 1024px) {
