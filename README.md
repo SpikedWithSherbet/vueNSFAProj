@@ -64,4 +64,6 @@ Dovid Edelkopf. (2023, January 24). Using CSS Animations To Mimic The Look Of A 
 
 Down Arrow by th studio on flaticon: (https://www.flaticon.com/free-icon/down-arrow_2985150?term=down+arrow&page=1&position=1&origin=search&related_id=2985150)
 
+DSEG Seven Segment Font by keshikan on GitHub (https://github.com/keshikan/DSEG/releases)
+
 
