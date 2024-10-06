@@ -228,6 +228,8 @@ fetchList() {
 
 <template>
 
+<div class="app-background">
+
 <div class="decadeSelectWrapper">
 
 <button class="70sWrapper" @click="changeto70s"><h1>70s</h1></button>
@@ -261,6 +263,7 @@ fetchList() {
 </div>
 <div class="detailedSortWrapper">
 
+  <h1>EXTRA INFO</h1>
 
   <ul class="itemGrid"> 
   <li class="gridItem" v-for="(item, index) in paginatedItems" :key="index"> 
@@ -274,9 +277,9 @@ fetchList() {
 </ul>
 
 <div class="pagination">
-  <button @click="currentPage = Math.max(currentPage - 1, 1)" :disabled="currentPage === 1">Previous</button>
-  <span>Page {{ currentPage }} of {{ totalPages }}</span>
-  <button @click="currentPage = Math.min(currentPage + 1, totalPages)" :disabled="currentPage === totalPages">Next</button>
+  <button class="Previous" @click="currentPage = Math.max(currentPage - 1, 1)" :disabled="currentPage === 1"><img src="./icons/down-arrow.png" alt="buttonpng" style="rotate: 90deg;"/></button>
+  <span><h2>{{ currentPage }}/{{ totalPages }}</h2></span>
+  <button class="Next" @click="currentPage = Math.min(currentPage + 1, totalPages)" :disabled="currentPage === totalPages"><img src="./icons/down-arrow.png" alt="buttonpng" style="rotate: 270deg;"/></button>
 </div>
    
    <!-- <img v-bind:src="item.URL[index]" :alt="`Item ${index + 1}`" />  -->
@@ -284,12 +287,18 @@ fetchList() {
   <img src="currentitemset.items[0]?.URL" alt="Item Image" /> -->
 
   </div>
+</div>
 </template>
 <style scoped>
 
 @font-face {
     font-family: DSEGClassicBold;
     src: url(DSEG14Classic-Bold.ttf);
+}
+
+.app-background {
+
+  background-color: #333;
 }
 
 .itemSection {
@@ -308,7 +317,6 @@ fetchList() {
   height: 100dvh;
   background-color: white;
   border: 3px solid rgb(74, 74, 74);
-  color: black;
   padding: 15px 32px;
   text-align: center;
   text-decoration: none;
@@ -317,6 +325,7 @@ fetchList() {
   width: 25vw;
   border-radius: 20px;
   z-index: 2;
+  transition: all ease-in ;
 
 }
 
@@ -328,6 +337,8 @@ fetchList() {
 .decadeSelectWrapper h1 {
   text-shadow: none;
   color: black;
+  font-family: 'PT Sans', sans-serif;
+  font-weight: 700;
 }
 .itemWrapper {
 
@@ -348,7 +359,7 @@ fetchList() {
   rotate: 270deg;
 }
 p{ 
-  font-family: "PT Sans", serif;
+  font-family: "PT Sans", sans-serif;
   font-size: 1.3rem;
   line-height: 1.5;
   width: 37.5em;
@@ -386,47 +397,63 @@ h3 {
   border-radius: 20px;
 }
 
-.itemGrid {
+.detailedSortWrapper {
 
+  display: grid;
+  justify-content: center;
+  height: 100%;
+  align-items: center;
+  justify-items: center;
+}
+
+.itemGrid {
   list-style-type: none;
   display: grid;
-  grid-template-columns: repeat(3, 0.5fr);
+  grid-template-columns: repeat(3, 1fr); /* Adjust this for the desired number of columns */
+  justify-content: center;
+  grid-gap: 10px;
+}
 
-
+.gridItem {
+  display: flex; /* Use flexbox for alignment */
+  flex-direction: column; /* Stack children vertically */
+  align-items: center; /* Center align */
+  justify-content: center; /* Center align */
+  width: 100%; /* Ensures it takes full width of the grid cell */
+  height: auto; /* Adjusts height automatically based on content */
 }
 
 .itemContainer {
-
-  position:relative;
+  box-sizing: border-box; /* Adjusts box model for consistent sizing */
+  position: relative;
+  width: 20em; /* Takes full width of the grid cell */
+  height: 25em; /* Takes full height of the grid cell */
 }
 
-.itemContainer img{
-border-radius: 10px;
-width: 40%;
-height: 40%;
-position: relative;
-transition: all 0.2s ease-out;
+.itemContainer img {
+  border-radius: 10px;
+  width: 20em; /* Ensures image fills container */
+  height: 20em; /* Maintains aspect ratio */
+  object-fit: cover; /* Keeps aspect ratio and covers the entire area */
+}
+
+.itemContainer h3 {
+  display: none;
+  font-size: large;
+  font-weight: bold;
+  position: absolute;
+  bottom: 50%;
+  left: 30%;
+  z-index: 3;
+  color: #ffeb37;
+  margin: auto;
+  text-align: center;
+  max-width: 7em;
 }
 
 .itemContainer:hover img {
 
   filter: brightness(50%);
-}
-
-.itemContainer h3 {
-
-display: none;
-font-size: small;
-font-weight: bold;
-position: absolute;
-top: 10%;
-left: 10%;
-z-index: 3;
-color: #ffeb37;
-margin: auto;
-text-align: center;
-max-width: 7em;
-
 }
 
 .itemContainer:hover h3 {
@@ -435,6 +462,24 @@ max-width: 7em;
   position: absolute;
   cursor: pointer;
   text-shadow: 0 0 5px #ffeb37, 0 0 10px #ffeb37;
+
+}
+
+.pagination {
+
+padding-top: 0em;
+padding-bottom: 2em;
+display: flex;
+align-items: center;
+gap: 0.3rem;
+
+}
+
+span h2 {
+
+font-weight: bold;
+font-family: 'DSEGCLassicBold';
+color: white;
 
 }
 
