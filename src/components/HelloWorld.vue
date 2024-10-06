@@ -241,10 +241,10 @@ fetchList() {
 
 <div class="decadeSelectWrapper">
 
-<button class="70sWrapper" @click="changeto70s"><h1>70s</h1></button>
-<button class="80sWrapper" @click="changeto80s"><h1>80s</h1></button>
-<button class="90sWrapper" @click="changeto90s"><h1>90s</h1></button>
-<button class="00sWrapper" @click="changeto00s"><h1>00s</h1></button>
+<a href='#itemShowcase'><button class="70sWrapper" @click="changeto70s"><h1>70s</h1></button></a>
+<a href='#itemShowcase'><button class="80sWrapper" @click="changeto80s"><h1>80s</h1></button></a>
+<a href='#itemShowcase'><button class="90sWrapper" @click="changeto90s"><h1>90s</h1></button></a>
+<a href='#itemShowcase'><button class="00sWrapper" @click="changeto00s"><h1>00s</h1></button></a>
 
 
 
@@ -257,7 +257,7 @@ fetchList() {
     <h1 class="green">{{ msg }}</h1>
 
     <div class="bgImage" :style="{ backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(' + backgroundSlideImg + ')' }">
-      <div class="itemWrapper">
+      <div class="itemWrapper" id="itemShowcase">
     
         
       
@@ -301,6 +301,10 @@ fetchList() {
 </template>
 <style scoped>
 
+a {
+
+  text-decoration: none;
+}
 @font-face {
     font-family: DSEGClassicBold;
     src: url(DSEG14Classic-Bold.ttf);
@@ -313,7 +317,7 @@ fetchList() {
 
 .hero {
 
-  height: 70dvh;
+  height: 100%;
   background-image: linear-gradient(to top, #000000, #000000, #333333, #333333);
   background-size: cover;
   background-size: 100% 1px;
@@ -554,5 +558,61 @@ font-weight: bold;
   .greetings h3 {
     text-align: left;
   }
+}
+
+@media (max-width: 768px) {
+
+  .itemGrid {
+  list-style-type: none;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); }
+
+  .hero h1 {
+font-size: 6rem;
+width: 65%;
+margin-left: 2rem;
+}
+  
+}
+
+@media (max-width: 426px) {
+
+.itemGrid {
+list-style-type: none;
+display: grid;
+grid-template-columns: repeat(1, 1fr); }
+
+.decadeSelectWrapper{
+
+display: block;
+}
+.decadeSelectWrapper button{
+
+height: 25vh;
+background-color: white;
+border: 3px solid rgb(74, 74, 74);
+padding: 15px 32px;
+text-align: center;
+text-decoration: none;
+display: block;
+font-size: 16px;
+width: 100vw;
+border-radius: 20px;
+z-index: 2;
+transition: all ease-in ;
+
+}
+
+.hero h1 {
+font-size: 3.7rem;
+width: 70%;
+margin-left: 2rem;
+}
+
+.itemGrid {
+
+  padding: 0;
+}
+
 }
 </style>
