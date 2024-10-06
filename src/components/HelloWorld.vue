@@ -15,7 +15,6 @@ export default {
       imgURL: 'https://media.nfsacollection.net/',
       query: 'https://api.collection.nfsa.gov.au/title/',
       listQuery: 'https://api.collection.nfsa.gov.au/title-list/',
-      // query: 'https://api.collection.nfsa.gov.au/search?limit=25&hasMedia=yes&year=1993',
       itemIds: data.itemsetfull.items,
       idNumber: 0,
       searchString: data.itemsetfull.items[0].itemId || '',
@@ -33,21 +32,18 @@ export default {
     this.fetchData();  
   },
 
-  computed: {
-  paginatedItems() {
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    return this.itemIds.slice(start, start + this.itemsPerPage);
+  computed: { //Updates the pagination variables in real time with computed.
+  paginatedItems() { //This part was with the help of AI. Here are the steps.
+    const start = (this.currentPage - 1) * this.itemsPerPage; //Gets the first page by Getting the current page -1 (0) and adding the set amount of items per page on it (6)
+    return this.itemIds.slice(start, start + this.itemsPerPage); //Clones and slices the range between the 'start' and the items per page range.
   },
   totalPages() {
-    return Math.ceil(this.itemIds.length / this.itemsPerPage);
+    return Math.ceil(this.itemIds.length / this.itemsPerPage); //Gets the item length and divides it by the items per page, in order to get the total amount and split them accordingly.
   }
 },
 
   methods: {
     fetchData() {
-      // use dynamic data to modify the API call
-      // in this case we use a text box which sets searchString
-      // and the currentPage to allow us to loop through the paginated results
       if (this.idNumber < this.currentitemset.items.length) { 
         this.searchString = this.currentitemset.items[this.idNumber].itemId
         this.backgroundSlideImg = this.currentitemset.items[this.idNumber].URL;
@@ -57,19 +53,18 @@ export default {
 
       fetch(queryString)
  .then(response => {
- // response.json().then(res => console.log(res));
           response.json().then(
             res => {this.$data.theData = res
             console.log(this.$data.theData)}
           );
  })
  .catch(err => {
- console.error(err);
+ console.error(err); //Just some error catching if it doesn't work!!
  });
  }
  else if (this.idNumber >= this.currentitemset.items.length) { 
   this.idNumber = 0;
-  this.searchString = this.currentitemset.items[this.idNumber].itemId
+  this.searchString = this.currentitemset.items[this.idNumber].itemId //This is just setting the idnumber and set of items back to the beginning once it reaches the length.
   this.fetchData()
 
   
@@ -79,11 +74,11 @@ export default {
  
 
 
-
+//These next functions just switch the item set when the corresponding decade button was clicked
  changeto70s(){ 
 
 this.currentitemset = data.itemset70s
-this.idNumber = 0
+this.idNumber = 0 //Sets the number back to zero
 this.fetchData()
 
  },
@@ -110,44 +105,9 @@ this.fetchData()
 
  },
 
-// fetchList() {
-//   this.listNames = [];
-//   for (const item of data.itemsetfull.items) {
-//     this.listQuery += `${item.itemId},`;
-    
-//   }
-
-//   fetch(this.listQuery)
-//  .then(response => {
-//  // response.json().then(res => console.log(res));
-//           response.json().then(
-//             res => {this.$data.listData = res
-//             }
-//           )
-//  })
-//  .then(res => {
-//       this.$data.listData = res; // Assign the fetched data to listData
-//       console.log(this.$data.listData)
-//       // Make sure listData is an array before iterating
-//       if (Array.isArray(this.$data.listData)) {
-//         this.listNames = []; // Clear existing names
-//         for (const item of this.$data.listData) {
-//           if (item?.['title']) {
-//             this.listNames.push(item['title']);
-//           }
-//         }
-//       } else {
-//         console.error('listData is not an array:', this.listData);
-//       }
-//     })
-//     .catch(err => {
-//       console.error('Error fetching list:', err);
-//     });
-// }
-
 // This next part needed some AI too. I'll walk through the steps
 fetchList() {
-  // appends the item IDs to the listQuery
+  // appends the item IDs to the listQuery for each item in the full item set
   for (const item of data.itemsetfull.items) {
     this.listQuery += `${item.itemId},`;
   }
@@ -184,46 +144,6 @@ fetchList() {
   
 
 }
-//       fetch(queryString)
-//         .then((response) => {
-//           response.json().then((res) => {
-//             // build a temporary object, add the data from the current page on each call of fetchData()
-//             this.$data.tempData = { ...this.$data.tempData, ...res }
-//             // the same as above but with just the results array instead of the whole data object
-//             this.$data.tempResultSet = this.$data.tempResultSet.concat(res.results)
-//             // total items from the meta object (total number of items found in the search)
-//             this.$data.total = res.meta.count.total
-//             // if there are items
-//             if (this.$data.total > 0) {
-//               // check how many pages of results @ 25 per page
-//               if (this.currentPage * 25 < 500 && this.currentPage * 25 < this.$data.total) {
-//                 // go to the next page
-//                 this.currentPage++
-//                 // call this function on itself (recursive) ! be careful, this can cause an infinite loop
-//                 this.fetchData()
-//               } else {
-//                 this.$data.theData = this.$data.tempData
-//                 this.$data.tempData = {}
-//                 this.$data.resultSet = this.$data.tempResultSet
-//                 this.$data.tempResultSet = []
-//                 // all items loaded, reset page, ready for next query
-//                 this.currentPage = 1
-//                 console.log('Pages: ' + Math.ceil(this.$data.total / 25))
-//                 console.log('finished')
-                
-//               }
-//             } else {
-//               console.log('no results')
-//             }
-//           })
-//         })
-//         .catch((err) => {
-//           console.error(err)
-//         })
-//     }
-//   }
-// }
-
 </script>
 
 <template>
@@ -256,7 +176,8 @@ fetchList() {
   <div class="search">
     <h1 class="green">{{ msg }}</h1>
 
-    <div class="bgImage" :style="{ backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(' + backgroundSlideImg + ')' }">
+    <div class="bgImage" :style="{ backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(' + backgroundSlideImg + ')' }"> 
+      <!-- This background image needs to be inline style to reference the typescript variables. I also added a linear gradient to make the text contrast. -->
       <div class="itemWrapper" id="itemShowcase">
     
         
@@ -277,24 +198,24 @@ fetchList() {
 
   <ul class="itemGrid"> 
   <li class="gridItem" v-for="(item, index) in paginatedItems" :key="index"> 
+    <!-- Gets the item from the paginated items on this page. -->
     <div class="itemContainer" v-for="(url, urlIndex) in item.URL" :key="urlIndex">
+      <!-- bit of weird syntax here but it its basically going more into the item to get the URL. -->
       <a :href="`https://www.collection.nfsa.gov.au/title/${item.itemId}`">
-        <img :src="url" :alt="`Image ${urlIndex + 1} for Item ${index + 1}`" />
+        <!-- This is getting the url and appending the item's ID on the page, this will hopefully lead to an external link -->
+        <img :src="url" :alt="`Image ${urlIndex + 1} for Item ${index + 1}`" /> 
         <h3>{{ listNames[index] }}</h3>
       </a>
     </div>
   </li>
 </ul>
 
-<div class="pagination">
+<div class="pagination"> 
+  <!-- I've mentioned what this does in computed. but basically it's getting the currentpage and subtracting 1 for previous, and adding 1 until it reaches total pages for next. Both are disabled when there are no more pages either end. -->
   <button class="Previous" @click="currentPage = Math.max(currentPage - 1, 1)" :disabled="currentPage === 1"><img src="./icons/down-arrow.png" alt="buttonpng" style="rotate: 90deg;"/></button>
   <span><h2>{{ currentPage }}/{{ totalPages }}</h2></span>
   <button class="Next" @click="currentPage = Math.min(currentPage + 1, totalPages)" :disabled="currentPage === totalPages"><img src="./icons/down-arrow.png" alt="buttonpng" style="rotate: 270deg;"/></button>
 </div>
-   
-   <!-- <img v-bind:src="item.URL[index]" :alt="`Item ${index + 1}`" />  -->
-<!-- <div id="item1"></div>
-  <img src="currentitemset.items[0]?.URL" alt="Item Image" /> -->
 
   </div>
 </div>
@@ -450,32 +371,32 @@ h3 {
 .itemGrid {
   list-style-type: none;
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Adjust this for the desired number of columns */
+  grid-template-columns: repeat(3, 1fr);
   justify-content: center;
   grid-gap: 10px;
 }
 
 .gridItem {
-  display: flex; /* Use flexbox for alignment */
-  flex-direction: column; /* Stack children vertically */
-  align-items: center; /* Center align */
-  justify-content: center; /* Center align */
-  width: 100%; /* Ensures it takes full width of the grid cell */
-  height: auto; /* Adjusts height automatically based on content */
+  display: flex; 
+  flex-direction: column; 
+  align-items: center;
+  justify-content: center; 
+  width: 100%; 
+  height: auto;
 }
 
 .itemContainer {
-  box-sizing: border-box; /* Adjusts box model for consistent sizing */
+  box-sizing: border-box; 
   position: relative;
-  width: 20em; /* Takes full width of the grid cell */
-  height: 25em; /* Takes full height of the grid cell */
+  width: 20em; 
+  height: 25em; 
 }
 
 .itemContainer img {
   border-radius: 10px;
-  width: 20em; /* Ensures image fills container */
-  height: 20em; /* Maintains aspect ratio */
-  object-fit: cover; /* Keeps aspect ratio and covers the entire area */
+  width: 20em; 
+  height: 20em; 
+  object-fit: cover; 
 }
 
 .itemContainer h3 {
