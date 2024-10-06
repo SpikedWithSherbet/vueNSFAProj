@@ -12,7 +12,6 @@ export default {
       listData: {},
       resultSet: [],
       tempResultSet: [],
-      currentPage: 1,
       imgURL: 'https://media.nfsacollection.net/',
       query: 'https://api.collection.nfsa.gov.au/title/',
       listQuery: 'https://api.collection.nfsa.gov.au/title-list/',
@@ -21,9 +20,29 @@ export default {
       idNumber: 0,
       searchString: data.itemsetfull.items[0].itemId || '',
       backgroundSlideImg: data.itemsetfull.items[0].URL,
-      currentitemset: data.itemsetfull
+      currentitemset: data.itemsetfull,
+      itemsPerPage: 6,
+    currentPage: 1,
+    totalPages: 0,
+    listNames: []
     }
   },
+
+  mounted() {
+    this.fetchList();// Call fetchList when the component is mounted
+    this.fetchData();  
+  },
+
+  computed: {
+  paginatedItems() {
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    return this.itemIds.slice(start, start + this.itemsPerPage);
+  },
+  totalPages() {
+    return Math.ceil(this.itemIds.length / this.itemsPerPage);
+  }
+},
+
   methods: {
     fetchData() {
       // use dynamic data to modify the API call
@@ -91,28 +110,80 @@ this.fetchData()
 
  },
 
-fetchList() {
-  for (const item of data.itemsetfull.items) {
-    this.listQuery += `${item.itemId},`;
-    console.log(this.listQuery)
-  }
+// fetchList() {
+//   this.listNames = [];
+//   for (const item of data.itemsetfull.items) {
+//     this.listQuery += `${item.itemId},`;
+    
+//   }
 
 //   fetch(this.listQuery)
 //  .then(response => {
 //  // response.json().then(res => console.log(res));
 //           response.json().then(
 //             res => {this.$data.listData = res
-//             console.log(this.$data.listData)}
-//           );
+//             }
+//           )
 //  })
+//  .then(res => {
+//       this.$data.listData = res; // Assign the fetched data to listData
+//       console.log(this.$data.listData)
+//       // Make sure listData is an array before iterating
+//       if (Array.isArray(this.$data.listData)) {
+//         this.listNames = []; // Clear existing names
+//         for (const item of this.$data.listData) {
+//           if (item?.['title']) {
+//             this.listNames.push(item['title']);
+//           }
+//         }
+//       } else {
+//         console.error('listData is not an array:', this.listData);
+//       }
+//     })
+//     .catch(err => {
+//       console.error('Error fetching list:', err);
+//     });
+// }
+
+// This next part needed some AI too. I'll walk through the steps
+fetchList() {
+  // appends the item IDs to the listQuery
+  for (const item of data.itemsetfull.items) {
+    this.listQuery += `${item.itemId},`;
+  }
+
+  fetch(this.listQuery)
+    .then(response => {
+      return response.json();
+    })
+    .then(res => {
+      this.listData = res; // Turns the listData object into the results and stores it
+
+      // Make sure listData is an array before iterating
+      if (Array.isArray(this.listData)) {
+        this.listNames = []; // Clears existing names so it will reset everytime the function is called
+        for (const item of this.listData) { //for loop to look for every item within the data
+          if (item?.['title']) { //does the item have a title?
+            this.listNames.push(item['title']); //.push adds the item's title to the array
+          }
+        }
+      } else {
+        console.error('listData is not an array:', this.listData); //throws an error if listData for some reason isn't an array.
+      }
+    })
+    .catch(err => {
+      console.error('Error fetching list:', err); //if it fails to fetch the data in general
+    });
+
+    console.log(this.listNames)
+}
+
 
   }
   
   
 
 }
-
- };
 //       fetch(queryString)
 //         .then((response) => {
 //           response.json().then((res) => {
@@ -190,23 +261,25 @@ fetchList() {
 </div>
 <div class="detailedSortWrapper">
 
-<div class="itemGrid">
 
-  <!-- Needed some help from ChatGPT for this part. I'll explain what it does. -->
-  <ul> 
-    <li class="gridItem" v-for="(item, index) in itemIds" :key="index"> 
-      <!-- Gets the item in itemIds via a for loop index -->
-
-      <div v-for="(url, urlIndex) in item.URL" :key="urlIndex">
-        <!-- Then, gets the URLs from inside of those items via the same thing. -->
+  <ul class="itemGrid"> 
+  <li class="gridItem" v-for="(item, index) in paginatedItems" :key="index"> 
+    <div class="itemContainer" v-for="(url, urlIndex) in item.URL" :key="urlIndex">
+      <a :href="`https://www.collection.nfsa.gov.au/title/${item.itemId}`">
         <img :src="url" :alt="`Image ${urlIndex + 1} for Item ${index + 1}`" />
-        <!-- Afterwards it grabs the url as the src for the specific image element as per the index. Just wanted to ensure that I did think about how this works, but I'm new to syntax. -->
-      </div>
-    </li>
-  </ul>
+        <h3>{{ listNames[index] }}</h3>
+      </a>
+    </div>
+  </li>
+</ul>
+
+<div class="pagination">
+  <button @click="currentPage = Math.max(currentPage - 1, 1)" :disabled="currentPage === 1">Previous</button>
+  <span>Page {{ currentPage }} of {{ totalPages }}</span>
+  <button @click="currentPage = Math.min(currentPage + 1, totalPages)" :disabled="currentPage === totalPages">Next</button>
+</div>
    
    <!-- <img v-bind:src="item.URL[index]" :alt="`Item ${index + 1}`" />  -->
-</div>
 <!-- <div id="item1"></div>
   <img src="currentitemset.items[0]?.URL" alt="Item Image" /> -->
 
@@ -313,11 +386,55 @@ h3 {
   border-radius: 20px;
 }
 
-.gridItem img{
+.itemGrid {
 
-width: 20%;
-height: 20%;
+  list-style-type: none;
+  display: grid;
+  grid-template-columns: repeat(3, 0.5fr);
 
+
+}
+
+.itemContainer {
+
+  position:relative;
+}
+
+.itemContainer img{
+border-radius: 10px;
+width: 40%;
+height: 40%;
+position: relative;
+transition: all 0.2s ease-out;
+}
+
+.itemContainer:hover img {
+
+  filter: brightness(50%);
+}
+
+.itemContainer h3 {
+
+display: none;
+font-size: small;
+font-weight: bold;
+position: absolute;
+top: 10%;
+left: 10%;
+z-index: 3;
+color: #ffeb37;
+margin: auto;
+text-align: center;
+max-width: 7em;
+
+}
+
+.itemContainer:hover h3 {
+
+  display: inherit;
+  position: absolute;
+  cursor: pointer;
+  text-shadow: 0 0 5px #ffeb37, 0 0 10px #ffeb37;
 
 }
 
