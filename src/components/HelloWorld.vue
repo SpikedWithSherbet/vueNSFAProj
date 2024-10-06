@@ -9,16 +9,19 @@ export default {
     return {
       theData: {},
       tempData: {},
+      listData: {},
       resultSet: [],
       tempResultSet: [],
       currentPage: 1,
       imgURL: 'https://media.nfsacollection.net/',
       query: 'https://api.collection.nfsa.gov.au/title/',
+      listQuery: 'https://api.collection.nfsa.gov.au/title-list/',
       // query: 'https://api.collection.nfsa.gov.au/search?limit=25&hasMedia=yes&year=1993',
-      itemIds: data.items,
+      itemIds: data.itemsetfull.items,
       idNumber: 0,
-      searchString: data.items[0].itemId || '',
-      backgroundSlideImg: data.items[0].URL
+      searchString: data.itemsetfull.items[0].itemId || '',
+      backgroundSlideImg: data.itemsetfull.items[0].URL,
+      currentitemset: data.itemsetfull
     }
   },
   methods: {
@@ -26,9 +29,9 @@ export default {
       // use dynamic data to modify the API call
       // in this case we use a text box which sets searchString
       // and the currentPage to allow us to loop through the paginated results
-      if (this.idNumber < data.items.length) { 
-        this.searchString = data.items[this.idNumber].itemId
-        this.backgroundSlideImg = data.items[this.idNumber].URL;
+      if (this.idNumber < this.currentitemset.items.length) { 
+        this.searchString = this.currentitemset.items[this.idNumber].itemId
+        this.backgroundSlideImg = this.currentitemset.items[this.idNumber].URL;
         this.idNumber++;
         let queryString = this.query + this.searchString
       console.log('API call: ' + queryString + this.searchString)
@@ -45,18 +48,71 @@ export default {
  console.error(err);
  });
  }
- else if (this.idNumber >= data.items.length) { 
+ else if (this.idNumber >= this.currentitemset.items.length) { 
   this.idNumber = 0;
-  this.searchString = data.items[this.idNumber].itemId
+  this.searchString = this.currentitemset.items[this.idNumber].itemId
   this.fetchData()
 
   
 }
- } 
+ }, 
+
+ 
+
+
+
+ changeto70s(){ 
+
+this.currentitemset = data.itemset70s
+this.idNumber = 0
+this.fetchData()
+
+ },
+ changeto80s(){ 
+
+this.currentitemset = data.itemset80s
+this.idNumber = 0
+this.fetchData()
+
+ },
+ changeto90s(){ 
+
+this.currentitemset = data.itemset90s
+this.idNumber = 0
+this.fetchData()
+
+ },
+
+ changeto00s(){ 
+
+this.currentitemset = data.itemset00s
+this.idNumber = 0
+this.fetchData()
+
+ },
+
+fetchList() {
+  for (const item of data.itemsetfull.items) {
+    this.listQuery += `${item.itemId},`;
+    console.log(this.listQuery)
+  }
+
+//   fetch(this.listQuery)
+//  .then(response => {
+//  // response.json().then(res => console.log(res));
+//           response.json().then(
+//             res => {this.$data.listData = res
+//             console.log(this.$data.listData)}
+//           );
+//  })
 
   }
-     
-};
+  
+  
+
+}
+
+ };
 //       fetch(queryString)
 //         .then((response) => {
 //           response.json().then((res) => {
@@ -103,10 +159,10 @@ export default {
 
 <div class="decadeSelectWrapper">
 
-<button class="70sWrapper"><h1>70s</h1></button>
-<button class="80sWrapper"><h1>80s</h1></button>
-<button class="90sWrapper"><h1>90s</h1></button>
-<button class="00sWrapper"><h1>00s</h1></button>
+<button class="70sWrapper" @click="changeto70s"><h1>70s</h1></button>
+<button class="80sWrapper" @click="changeto80s"><h1>80s</h1></button>
+<button class="90sWrapper" @click="changeto90s"><h1>90s</h1></button>
+<button class="00sWrapper" @click="changeto00s"><h1>00s</h1></button>
 
 
 
@@ -125,39 +181,60 @@ export default {
         <h1>{{ theData['title'] }}</h1>
         <p class='est'>{{ "EST." + theData['productionDates']?.[0]?.['fromYear'] || 'N/A' }}</p>
         <p>{{ theData['summary'] }}</p>
-
-        <!-- <p>{{ result['name'] }}</p> -->
-        <!-- check if there's any items in the preview array.  If so, put the biggest image in the view -->
-        <!-- v-bind is used to update the src attribute when the data comes in -->
         <img>
 
-  <!-- v-if="result['preview'] && result['preview'][0]"
-          v-bind:src="imgURL + result['preview'][0]['filePath']"
-          v-bind:alt="result['name']"
-          v-bind:title="result['name']"  -->
           <button class="itemFetch" @click="fetchData"><img src="./icons/down-arrow.png" alt="buttonpng"/></button>
         </div>
   </div> 
 </div>
 </div>
+<div class="detailedSortWrapper">
+
+<div class="itemGrid">
+
+  <!-- Needed some help from ChatGPT for this part. I'll explain what it does. -->
+  <ul> 
+    <li class="gridItem" v-for="(item, index) in itemIds" :key="index"> 
+      <!-- Gets the item in itemIds via a for loop index -->
+
+      <div v-for="(url, urlIndex) in item.URL" :key="urlIndex">
+        <!-- Then, gets the URLs from inside of those items via the same thing. -->
+        <img :src="url" :alt="`Image ${urlIndex + 1} for Item ${index + 1}`" />
+        <!-- Afterwards it grabs the url as the src for the specific image element as per the index. Just wanted to ensure that I did think about how this works, but I'm new to syntax. -->
+      </div>
+    </li>
+  </ul>
+   
+   <!-- <img v-bind:src="item.URL[index]" :alt="`Item ${index + 1}`" />  -->
+</div>
+<!-- <div id="item1"></div>
+  <img src="currentitemset.items[0]?.URL" alt="Item Image" /> -->
+
+  </div>
 </template>
 <style scoped>
+
+@font-face {
+    font-family: DSEGClassicBold;
+    src: url(DSEG14Classic-Bold.ttf);
+}
 
 .itemSection {
 
   display: block;
-  padding-bottom: 10em;
 }
 
 .decadeSelectWrapper{
 
   display: flex;
+  padding-bottom: 1rem;
+  z-index: 1;
 }
 .decadeSelectWrapper button{
 
   height: 100dvh;
   background-color: white;
-  border: 2px solid black;
+  border: 3px solid rgb(74, 74, 74);
   color: black;
   padding: 15px 32px;
   text-align: center;
@@ -165,11 +242,18 @@ export default {
   display: inline-block;
   font-size: 16px;
   width: 25vw;
+  border-radius: 20px;
+  z-index: 2;
 
 }
 
-.decadeSelectWrapper h1 {
+.decadeSelectWrapper button:hover{
 
+  background-color: #ffeb37;
+}
+
+.decadeSelectWrapper h1 {
+  text-shadow: none;
   color: black;
 }
 .itemWrapper {
@@ -188,24 +272,30 @@ export default {
   z-index: 1;
   display: inline-block;
   text-align: center;
+  rotate: 270deg;
 }
 p{ 
-
+  font-family: "PT Sans", serif;
+  font-size: 1.3rem;
+  line-height: 1.5;
   width: 37.5em;
   color: white;
 }
 h1 {
-  color: white;
+  margin-top: 0.5rem;
+  color: #ffeb37;
+  text-shadow: 0 0 5px #ffeb37, 0 0 10px #ffeb37;
   font-weight: 500;
   font-size: 2.6rem;
-  position: relative;
-  top: -10px;
 }
 
 .est {
 
-  color: white;
+  font-family: DSEGClassicBold;
+  font-size: 2.2em;
+  color: #ffeb37;
   padding-bottom: 3rem;
+  text-shadow: 0 0 5px #ffeb37, 0 0 10px #ffeb37;
 }
 
 h3 {
@@ -218,8 +308,17 @@ h3 {
   background-size: cover;
   background-position: center;
   position: relative;
-  top: 0;
+  top: -3rem;
   z-index: 0;
+  border-radius: 20px;
+}
+
+.gridItem img{
+
+width: 20%;
+height: 20%;
+
+
 }
 
 .greetings h1,
